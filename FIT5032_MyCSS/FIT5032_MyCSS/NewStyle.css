@@ -1,3 +1,18 @@
 ﻿body {
     color:blue;
+    font-size:64px;
+}
+p{
+    color:forestgreen;
+    font-size:18px;
+    font-family:'Times New Roman', Times, serif;
+}
+h1{
+    color:teal;
+}
+h2{
+    color:maroon;
+}
+h3{
+    color:blueviolet;
 }
