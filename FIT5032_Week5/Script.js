@@ -1,0 +1,1 @@
+document.getElementById("Test1").innerHTML = "This is a replaced message";
