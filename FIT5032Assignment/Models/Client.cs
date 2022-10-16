@@ -11,16 +11,17 @@ namespace FIT5032Assignment.Models
         //[Key]
         public int ClientID { get; set; }
         public string clientFirstName { get; set; }
-        private string clientLastName;
-        private DateTime clientDOB;
-        private string clientMedicareNo;
-        private string clientMedicareUniqueID;
-        private string clientAddress;
-        private string clientSuburb;
-        private string clientPostcode;
-        private string clientPhoneNumber;
-        private string clientEmail;
-        private List<Appointment> appointments;
+        public string clientLastName { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime clientDOB { get; set; }
+        public string clientMedicareNo { get; set; }
+        public string clientMedicareUniqueID { get; set; }
+        public string clientAddress { get; set; }
+        public string clientSuburb { get; set; }
+        public string clientPostcode { get; set; }
+        public string clientPhoneNumber { get; set; }
+        public string clientEmail { get; set; }
+        public List<Appointment> appointments { get; set; }
 
         public Client()
         {
