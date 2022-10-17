@@ -17,17 +17,17 @@
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(model => model.Client, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.ClientString, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => Model.Client, new SelectList(new PracticeContext().Clients.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Client, "", new { @class = "text-danger" })
+            @Html.DropDownListFor(m => Model.ClientString, new SelectList(new PracticeContext().Clients.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ClientString, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.Doctor, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.DoctorString, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => Model.Doctor, new SelectList(new PracticeContext().Doctors.ToList(), null, "FirstName"), htmlAttributes: new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Doctor, "", new { @class = "text-danger" })
+            @Html.DropDownListFor(m => Model.DoctorString, new SelectList(new PracticeContext().Doctors.ToList(), null, "FirstName"), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.DoctorString, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">

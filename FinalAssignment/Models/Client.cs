@@ -32,7 +32,7 @@ namespace FinalAssignment.Models
         public string Email { get; set; }
         public List<Appointment> Appointments { get; set; }
         [NotMapped]
-        public string DropDownList { get { return ClientID + "-" + FirstName + " " + LastName; } }
+        public string DropDownList { get { return ClientID + " - " + FirstName + " " + LastName; } }
 
     }
 }

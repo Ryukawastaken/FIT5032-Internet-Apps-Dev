@@ -47,7 +47,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ImageID,Path,Name")] Image image, HttpPostedFileBase postedFile)
+        public ActionResult Create([Bind(Include = "ImageID,Name")] Image image, HttpPostedFileBase postedFile)
         {
             ModelState.Clear();
             var myUniqueFileName = string.Format(@"{0}", Guid.NewGuid());

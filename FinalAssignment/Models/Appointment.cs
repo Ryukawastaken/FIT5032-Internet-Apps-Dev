@@ -12,6 +12,9 @@ namespace FinalAssignment.Models
         public int AppointmentID { get; set; }
         public Client Client { get; set; }
         public Doctor Doctor { get; set; }
+        public string ClientString { get; set; }
+        public string DoctorString { get; set; }
+
 
         [Required(ErrorMessage = "You can't leave this field blank!")]
         [DataType(DataType.Date)]

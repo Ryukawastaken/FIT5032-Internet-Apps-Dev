@@ -198,25 +198,9 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\aspnet-FinalAssignment-20221015090045.mdf" />
-    <Content Include="App_Data\aspnet-FinalAssignment-20221015090045_log.ldf">
-      <DependentUpon>aspnet-FinalAssignment-20221015090045.mdf</DependentUpon>
-    </Content>
-    <Content Include="App_Data\aspnet-FIT5032_WebAuthentication-20220905010221.mdf" />
-    <Content Include="App_Data\aspnet-FIT5032_WebAuthentication-20220905010221_log.ldf">
-      <DependentUpon>aspnet-FIT5032_WebAuthentication-20220905010221.mdf</DependentUpon>
-    </Content>
-    <Content Include="App_Data\FinalAssignment.Models.PracticeContext.mdf" />
-    <Content Include="App_Data\FinalAssignment.Models.PracticeContext_log.ldf">
-      <DependentUpon>FinalAssignment.Models.PracticeContext.mdf</DependentUpon>
-    </Content>
     <Content Include="App_Data\PracticeDB.mdf" />
     <Content Include="App_Data\PracticeDB_log.ldf">
       <DependentUpon>PracticeDB.mdf</DependentUpon>
-    </Content>
-    <Content Include="App_Data\Replacement.mdf" />
-    <Content Include="App_Data\Replacement_log.ldf">
-      <DependentUpon>Replacement.mdf</DependentUpon>
     </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -228,6 +212,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include=".bin\node.cmd" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

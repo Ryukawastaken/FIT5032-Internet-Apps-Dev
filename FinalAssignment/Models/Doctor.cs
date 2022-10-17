@@ -21,5 +21,6 @@ namespace FinalAssignment.Models
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public List<Appointment> Appointments { get; set; }
+        public string DropDownList { get { return DoctorID + " - " + FirstName + " " + LastName; } }
     }
 }
