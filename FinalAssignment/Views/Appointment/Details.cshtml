@@ -10,6 +10,18 @@
     <h4>Appointment</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Client)
+            @Html.DisplayNameFor(model => model.Doctor)
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.DropDownList)
+            @Html.DisplayFor(model => model.Doctor)
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
     </dl>
 </div>
 <p>

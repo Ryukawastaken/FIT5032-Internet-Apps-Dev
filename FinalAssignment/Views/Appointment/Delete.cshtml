@@ -11,6 +11,14 @@
     <h4>Appointment</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
     </dl>
 
     @using (Html.BeginForm()) {

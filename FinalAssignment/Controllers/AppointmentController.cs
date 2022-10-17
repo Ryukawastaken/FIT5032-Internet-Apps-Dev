@@ -7,9 +7,6 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalAssignment.Models;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using System.Threading.Tasks;
 
 namespace FinalAssignment.Controllers
 {
@@ -18,14 +15,8 @@ namespace FinalAssignment.Controllers
         private PracticeContext db = new PracticeContext();
 
         // GET: Appointment
-        [Authorize]
         public ActionResult Index()
         {
-            if (User.IsInRole("Client"))
-            {
-                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email,User.Identity.Name));
-                return View(appointments.ToList());
-            }
             return View(db.Appointments.ToList());
         }
 
@@ -47,8 +38,6 @@ namespace FinalAssignment.Controllers
         // GET: Appointment/Create
         public ActionResult Create()
         {
-            ViewBag.ClientID = new SelectList(db.Clients, null, "ClientID");
-            ViewBag.DoctorID = new SelectList(db.Doctors, "DoctorID", "DoctorID");
             return View();
         }
 
@@ -57,17 +46,10 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AppointmentID")] Appointment appointment)
+        public ActionResult Create([Bind(Include = "AppointmentID,DateAndTime")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
-                appointment.Client = db.Clients.Find(appointment.ClientID);
-                appointment.Doctor = db.Doctors.Find(appointment.DoctorID);
-                if (appointment.DateAndTime.Date < DateTime.Now)
-                {
-                    appointment.DateAndTime = DateTime.Now;
-                }
-
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -96,7 +78,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AppointmentID")] Appointment appointment)
+        public ActionResult Edit([Bind(Include = "AppointmentID,DateAndTime")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
@@ -133,11 +115,6 @@ namespace FinalAssignment.Controllers
             return RedirectToAction("Index");
         }
 
-        public DbSet GetAllClients()
-        {
-            return db.Clients;
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -145,19 +122,6 @@ namespace FinalAssignment.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private static async Task SendEmail(string clientEmail)
-        {
-            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
-            var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("test@example.com", "Example User");
-            var subject = "Sending with Twilio SendGrid is Fun";
-            var to = new EmailAddress(clientEmail, "Example User");
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
         }
     }
 }
