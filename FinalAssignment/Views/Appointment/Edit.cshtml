@@ -19,25 +19,32 @@
     @Html.HiddenFor(model => model.AppointmentID)
 
     <div class="form-group">
-	    @Html.LabelFor(model => model.ClientString, htmlAttributes: new { @class = "control-label col-md-2" })
-	    <div class="col-md-10">
-		    @Html.DropDownListFor(m => Model.ClientString, new SelectList(new PracticeContext().Clients.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
-		    @Html.ValidationMessageFor(model => model.ClientString, "", new { @class = "text-danger" })
-	    </div>
+        @Html.LabelFor(model => model.ClientString, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => Model.ClientString, new SelectList(new PracticeContext().Clients.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ClientString, "", new { @class = "text-danger" })
+        </div>
     </div>
     <div class="form-group">
-	    @Html.LabelFor(model => model.DoctorString, htmlAttributes: new { @class = "control-label col-md-2" })
-	    <div class="col-md-10">
-		    @Html.DropDownListFor(m => Model.DoctorString, new SelectList(new PracticeContext().Doctors.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
-		    @Html.ValidationMessageFor(model => model.DoctorString, "", new { @class = "text-danger" })
-	    </div>
+        @Html.LabelFor(model => model.DoctorString, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => Model.DoctorString, new SelectList(new PracticeContext().Doctors.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.DoctorString, "", new { @class = "text-danger" })
+        </div>
     </div>
     <div class="form-group">
-	    @Html.LabelFor(model => model.DateAndTime, htmlAttributes: new { @class = "control-label col-md-2" })
-	    <div class="col-md-10">
-		    @Html.EditorFor(model => model.DateAndTime, new { htmlAttributes = new { @class = "form-control" } })
-		    @Html.ValidationMessageFor(model => model.DateAndTime, "", new { @class = "text-danger" })
-	    </div>
+        @Html.LabelFor(model => model.DateAndTime, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DateAndTime, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DateAndTime, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.LocationString, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => Model.LocationString, new SelectList(new PracticeContext().Locations.ToList(), null, "DropDownList"), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.LocationString, "", new { @class = "text-danger" })
+        </div>
     </div>
 
     <div class="form-group">

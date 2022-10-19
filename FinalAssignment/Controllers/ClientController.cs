@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinalAssignment.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin;
 
 namespace FinalAssignment.Controllers
 {
@@ -50,6 +53,19 @@ namespace FinalAssignment.Controllers
         {
             if (ModelState.IsValid)
             {
+                /*var temp = new ApplicationDbContext();
+                //var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(HttpContext.GetOwinContext()));
+                var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>());
+                //var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>());
+                var users = userManager.Users.ToList();
+                for (int i = 0; i < users.Count; i++)
+                {
+                    if (users[i].Email == client.Email)
+                    {
+                        userManager.AddToRole(users[i].Id, "Client");
+                        break;
+                    }
+                }*/
                 db.Clients.Add(client);
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -18,8 +18,8 @@ namespace FinalAssignment.Models
 
         public DbSet<Image> Images { get; set; }
 
+        public DbSet<Location> Locations { get; set; }
 
-
-
+        public System.Data.Entity.DbSet<FinalAssignment.Models.Event> Events { get; set; }
     }
 }

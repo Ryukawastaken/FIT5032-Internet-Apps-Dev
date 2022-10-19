@@ -15,6 +15,10 @@ namespace FinalAssignment.Models
         public string ClientString { get; set; }
         public string DoctorString { get; set; }
 
+        public string LocationString { get; set; }
+
+        public Location Location { get; set; }
+
 
         [Required(ErrorMessage = "You can't leave this field blank!")]
         [DataType(DataType.Date)]

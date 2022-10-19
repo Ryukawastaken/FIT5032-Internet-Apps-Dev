@@ -22,6 +22,10 @@
 				@Html.DisplayNameFor(model => model.DateAndTime)
 
 			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Location)
+
+			</th>
 			@*<th>
 				@Html.DisplayNameFor(model => model.Image)
 			</th>*@
@@ -39,10 +43,14 @@
                     @Html.DisplayFor(modelItem => item.Doctor.DropDownList)
 
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateAndTime)
+	            <td>
+		            @Html.DisplayFor(modelItem => item.DateAndTime)
 
-                </td>
+	            </td>
+	            <td>
+		            @Html.DisplayFor(modelItem => item.Location.DropDownList)
+
+	            </td>
                @* @if (item.Image != null)
                 {
                     <td>
