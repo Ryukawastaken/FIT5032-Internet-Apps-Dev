@@ -26,12 +26,19 @@ namespace FinalAssignment.Controllers
         // GET: Appointment
         public ActionResult Index()
         {
-            if (User.IsInRole("Client"))
+            if (User.IsInRole("Doctor"))
             {
-                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name));
+                var appointments = db.Appointments.Where(a => string.Equals(a.Doctor.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor);
                 return View(appointments);
             }
-            return View(db.Appointments.ToList());
+            if (User.IsInRole("Client"))
+            {
+                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor);
+                return View(appointments);
+            }
+
+            var appointmentss = db.Appointments.Include(c => c.Client).Include(d => d.Doctor);
+            return View(appointmentss);
         }
 
         // GET: Appointment/Details/5
@@ -60,11 +67,12 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AppointmentID,DateAndTime, ClientString, DoctorString")] Appointment appointment)
+        public ActionResult Create([Bind(Include = "AppointmentID,DateAndTime, ClientString, DoctorString, Client, Doctor")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
                 appointment.Client = db.Clients.Find(appointment.ClientString.Split('-')[0].Trim().AsInt());
+                appointment.Doctor = db.Doctors.Find(appointment.DoctorString.Split('-')[0].Trim().AsInt());
                 //appointment.Image = db.Images.ToList()[0];
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
