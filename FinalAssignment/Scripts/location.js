@@ -5,7 +5,7 @@
 *
 * @author Jian Liew <jian.liew@monash.edu>
 */
-const TOKEN = "pk.eyJ1Ijoicnl1a2F3YXN0YWtlbiIsImEiOiJjbDlmYm12YjcwNXZjM3VvaGU4NnpoMnN4In0.UI7NOJ7qiW8U7paMPvIt6g";
+var TOKEN = Environment.GetEnvironmentVariable("MAP_KEY");
 var locations = [];
 // The first step is obtain all the latitude and longitude from the HTML
 // The below is a simple jQuery selector
