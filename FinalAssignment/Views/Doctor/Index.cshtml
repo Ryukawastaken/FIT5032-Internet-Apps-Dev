@@ -32,9 +32,12 @@
         <th>
             @Html.DisplayNameFor(model => model.PhoneNumber)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
+	    <th>
+		    @Html.DisplayNameFor(model => model.Email)
+	    </th>
+	    <th>
+		    @Html.DisplayNameFor(model => model.Rating)
+	    </th>
         <th></th>
     </tr>
 
@@ -61,9 +64,12 @@
         <td>
             @Html.DisplayFor(modelItem => item.PhoneNumber)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
+	    <td>
+		    @Html.DisplayFor(modelItem => item.Email)
+	    </td>
+	    <td>
+		    @Html.DisplayFor(modelItem => item.Rating)
+	    </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.DoctorID }) |
             @Html.ActionLink("Details", "Details", new { id=item.DoctorID }) |

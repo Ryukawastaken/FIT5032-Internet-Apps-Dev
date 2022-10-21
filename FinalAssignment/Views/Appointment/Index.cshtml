@@ -11,26 +11,34 @@
 </p>
 <table id="appointments" class="table">
 	<thead>
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Client)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Doctor)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.DateAndTime)
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Client)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Doctor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAndTime)
 
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Location)
+            </th>
+	        <th>
+		        @Html.DisplayNameFor(model => model.Duration)
 
-			</th>
-			@*<th>
-				@Html.DisplayNameFor(model => model.Image)
-			</th>*@
-			<th></th>
-		</tr>
+	        </th>
+	        <th>
+		        @Html.DisplayNameFor(model => model.AppointmentType)
+
+	        </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.Image)
+        </th>*@
+            <th></th>
+        </tr>
 	</thead>
     <tbody>
         @foreach (var item in Model)
@@ -45,6 +53,14 @@
                 </td>
 	            <td>
 		            @Html.DisplayFor(modelItem => item.DateAndTime)
+
+	            </td>
+	            <td>
+		            @Html.DisplayFor(modelItem => item.Duration)
+
+	            </td>
+	            <td>
+		            @Html.DisplayFor(modelItem => item.AppointmentType)
 
 	            </td>
 	            <td>

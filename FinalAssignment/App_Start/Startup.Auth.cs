@@ -60,8 +60,8 @@ namespace FinalAssignment
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {
-                ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID"),
-                ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET")
+                ClientId = "329037757255-ta8p6rdct0sgs2v251t39cdblmvbverp.apps.googleusercontent.com",
+                ClientSecret = "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"
             });
         }
     }

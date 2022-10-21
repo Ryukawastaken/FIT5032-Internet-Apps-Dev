@@ -26,13 +26,6 @@ namespace FinalAssignment
             bundles.Add(new ScriptBundle("~/bundles/mapbox").Include(
                 "~/Scripts/location.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/fullcalendar").Include(
-                "~/Scripts/lib/jquery.min.js",
-                "~/Scripts/lib/moment.min.js",
-                "~/Scripts/fullcalendar.js",
-                "~/Scripts/calendar.js"
-            ));
-
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",

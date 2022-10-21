@@ -21,5 +21,7 @@ namespace FinalAssignment.Models
         public DbSet<Location> Locations { get; set; }
 
         public System.Data.Entity.DbSet<FinalAssignment.Models.Event> Events { get; set; }
+
+        public System.Data.Entity.DbSet<FinalAssignment.Models.Schedule> Schedules { get; set; }
     }
 }
