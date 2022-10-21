@@ -22,6 +22,7 @@ using Ical.Net.Serialization;
 using SendGrid.Helpers.Mail;
 using Calendar = Ical.Net.Calendar;
 using Image = System.Drawing.Image;
+using System.Diagnostics;
 
 namespace FinalAssignment.Controllers
 {
@@ -54,11 +55,13 @@ namespace FinalAssignment.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Appointment appointment = db.Appointments.Find(id);
+            Appointment appointment = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).Include(s => s.Schedule).ToList()[(int)id];
             if (appointment == null)
             {
                 return HttpNotFound();
             }
+            SendBulkEmail();
+            //SendEmail(appointment);
             return View(appointment);
         }
 
@@ -267,21 +270,23 @@ namespace FinalAssignment.Controllers
             string base64String = Convert.ToBase64String(byteArray);
             newEmail.AddAttachment("Appointment.ics", base64String);
             var response = await client.SendEmailAsync(newEmail);
+            Debug.WriteLine(response.IsSuccessStatusCode ? "Email Queued Succesffuly!" : "Not Successful! D:");
 
-           /* string CalendarItem = CreateCalendarFile(appointment);
-            byte[] byteArray = Convert.FromBase64String(CalendarItem);
-            string base64String = Convert.ToBase64String(byteArray);
-           
-            Response.ClearHeaders();
-            Response.Clear();
-            Response.Buffer = true;
-            Response.ContentType = "text/calendar";
-            Response.AddHeader("content-length", CalendarItem.Length.ToString());
-            Response.AddHeader("content-disposition", "attachment; filename=\"" + "Booking" + ".ics\"");
-            Response.Write(CalendarItem);
-            Response.Flush();
 
-            newEmail.PlainTextContent = "Testing";*/
+            /* string CalendarItem = CreateCalendarFile(appointment);
+             byte[] byteArray = Convert.FromBase64String(CalendarItem);
+             string base64String = Convert.ToBase64String(byteArray);
+
+             Response.ClearHeaders();
+             Response.Clear();
+             Response.Buffer = true;
+             Response.ContentType = "text/calendar";
+             Response.AddHeader("content-length", CalendarItem.Length.ToString());
+             Response.AddHeader("content-disposition", "attachment; filename=\"" + "Booking" + ".ics\"");
+             Response.Write(CalendarItem);
+             Response.Flush();
+
+             newEmail.PlainTextContent = "Testing";*/
 
             //var response = await client.SendEmailAsync(newEmail);
         }
@@ -309,6 +314,65 @@ namespace FinalAssignment.Controllers
             }
 
             var response = await client.SendEmailAsync(newEmail);
+        }
+
+        private async Task SendBulkEmail()
+        {
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            var client = new SendGridClient(apiKey);
+            var personalisation = new Personalization();
+            personalisation.Bccs = new List<EmailAddress>();
+            var appointments = db.Appointments.Include(c => c.Client).ToList();
+            var newEmail = new SendGridMessage()
+            {
+                From = new EmailAddress("NicolasPallant.hotmail.com"),
+                Subject = "Test",
+                PlainTextContent = "Text for Body",
+                HtmlContent = "<strong> Hello World!",
+                Personalizations = new List<Personalization>
+                {
+                    new Personalization
+                    {
+                        Tos = new List<EmailAddress>
+                        {
+                            new EmailAddress("npal0002@student.monash.edu"),
+                            new EmailAddress("nic.pallant@monash.edu")
+                        }
+                    }
+                }
+            };
+            var response = await client.SendEmailAsync(newEmail);
+            /*var emails = new List<EmailAddress>();
+            *//*for (int i = 0; i < appointments.Count; i++)
+            {
+                var clientEmail = new EmailAddress(appointments[i].Client.Email, appointments[i].Client.FirstName);
+                emails.Add(clientEmail);
+            }*/
+
+            /*string serverPath = Server.MapPath("~/Uploads/");
+            string filePath = db.Images.ToList()[0].Path;
+            string fullPath = serverPath + filePath;*//*
+            newEmail.From = new EmailAddress("NicolasPallant.hotmail.com", "Healthcare Services General Practice");
+            newEmail.Subject = "Appointment Reminder & Directions";
+            //newEmail.AddTos(emails);
+            newEmail.AddTo("nic.pallant@monash.edu");
+            newEmail.AddTo("npal0002@student.monash.edu");
+            //var newEmail = new SendGridMessage();
+            newEmail.HtmlContent = "This is reminder about your appointment booked for today";
+            newEmail.PlainTextContent = "Testing";
+            *//*if (System.IO.File.Exists(fullPath))
+            {
+               
+                MemoryStream m = new MemoryStream();
+                Image.FromFile(fullPath).Save(m, Image.FromFile(fullPath).RawFormat);
+                byte[] imageBytes = m.ToArray();
+                string base64String = Convert.ToBase64String(imageBytes);
+                newEmail.AddAttachment("DoctorsCertificate" + Path.GetExtension(filePath), base64String);
+            }*//*
+            Debug.WriteLine("Test");
+            var response = await client.SendEmailAsync(newEmail);
+            Debug.WriteLine("Finished!");*/
+            //Debug.WriteLine(response.IsSuccessStatusCode ? "Email Queued Succesffuly!" : "Not Successful! D:");
         }
 
         private string CreateCalendarFile(Appointment appointment)
