@@ -8,25 +8,34 @@
 
 <div id="map" style="height:500px"></div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+{
+	<p>
+		@Html.ActionLink("Create New", "Create")
+	</p>
+}
 <table class="table">
-	<tr>
-		<th>
-			@Html.DisplayNameFor(model => model.Name)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.Description)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.Latitude)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.Longitude)
-		</th>
-		<th></th>
-	</tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Latitude)
+        </th>
+	    <th>
+		    @Html.DisplayNameFor(model => model.Longitude)
+	    </th>
+        @if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+        {
+	        <th>
+		        @Html.DisplayNameFor(model => model.Rating)
+	        </th>
+        }
+        <th></th>
+    </tr>
 
 	@foreach (var item in Model) {
 		<tr class="coordinates">
@@ -42,15 +51,32 @@
 			<td class="longitude">
 				@Html.DisplayFor(modelItem => item.Longitude)
 			</td>
-			<td>
-				@Html.ActionLink("Edit", "Edit", new { id=item.LocationID }) |
-				@Html.ActionLink("Details", "Details", new { id=item.LocationID }) |
-				@Html.ActionLink("Delete", "Delete", new { id=item.LocationID })
-			</td>
+			@if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+			{
+				<td>
+					@Html.DisplayFor(modelItem => item.Rating)
+				</td>
+			}
+            <td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.LocationID })
+                }
+				|
+                @if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+                {
+                    @Html.ActionLink("Details", "Details", new { id = item.LocationID })
+                }
+                |
+                @if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.LocationID })
+                }
+            </td>
 		</tr>
 	}
-
 </table>
+
 @section Scripts {
 	@Scripts.Render("~/bundles/mapbox")
 }

@@ -31,44 +31,68 @@ namespace FinalAssignment.Controllers
         private PracticeContext db = new PracticeContext();
 
         // GET: Appointment
+        [Authorize]
         public ActionResult Index()
         {
             if (User.IsInRole("Doctor"))
             {
-                var appointments = db.Appointments.Where(a => string.Equals(a.Doctor.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location);
+                var appointments = db.Appointments.Where(a => string.Equals(a.Doctor.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image);
                 return View(appointments);
             }
             if (User.IsInRole("Client"))
             {
-                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location);
+                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image);
                 return View(appointments);
             }
 
-            var allAppointments = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location);
-            return View(allAppointments);
+            if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+            {
+                var allAppointments = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image);
+                return View(allAppointments);
+            }
+
+            return HttpNotFound();
         }
 
         // GET: Appointment/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Appointment appointment = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).Include(s => s.Schedule).ToList()[(int)id];
+            var appointments = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).Include(s => s.Schedule).Include(i=>i.Image).Include(l=>l.Location).ToList();
+            Appointment appointment = new Appointment();
+            for (int i = 0; i < appointments.Count; i++)
+            {
+                if (appointments[i].AppointmentID == id)
+                {
+                    appointment = appointments[i];
+                }
+            }
             if (appointment == null)
             {
                 return HttpNotFound();
             }
-            SendBulkEmail();
-            //SendEmail(appointment);
+            else if (!(string.Equals(appointment.Client.Email, User.Identity.Name) ||
+                       string.Equals(appointment.Doctor.Email, User.Identity.Name)) && !(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(appointment);
         }
 
         // GET: Appointment/Create
+        [Authorize]
         public ActionResult Create()
         {
-            return View();
+            if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+            {
+                return View();
+            }
+
+            return HttpNotFound();
         }
 
         // POST: Appointment/Create
@@ -76,14 +100,14 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AppointmentID,DateAndTime, ClientString, DoctorString, Client, Doctor, LocationString, Location, Duration, AppointmentType, Schedule")] Appointment appointment)
+        [Authorize]
+        public ActionResult Create([Bind(Include = "AppointmentID,DateAndTime, ClientString, DoctorString, Client, Doctor, LocationString, Location, Duration, AppointmentType, Schedule, Image")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
                 appointment.Client = db.Clients.Find(appointment.ClientString.Split('-')[0].Trim().AsInt());
                 appointment.Doctor = db.Doctors.Find(appointment.DoctorString.Split('-')[0].Trim().AsInt());
                 appointment.Location = db.Locations.Find(appointment.LocationString.Split('-')[0].Trim().AsInt());
-                appointment.OldDateAndTime = appointment.DateAndTime;
                 var clientAppointments = db.Appointments.Where(a => appointment.Client.ClientID == a.Client.ClientID).ToList();
                 for (int i = 0; i < clientAppointments.Count; i++)
                 {
@@ -97,7 +121,7 @@ namespace FinalAssignment.Controllers
                     }
                 }
                 var doctorAppointments = db.Appointments.Where(a => appointment.Doctor.DoctorID == a.Doctor.DoctorID).ToList();
-                for (int i = 0; i < clientAppointments.Count; i++)
+                for (int i = 0; i < doctorAppointments.Count; i++)
                 {
                     if ((appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration) >
                          doctorAppointments[i].DateAndTime &&
@@ -114,7 +138,7 @@ namespace FinalAssignment.Controllers
                 newSchedule.EndTime = appointment.DateAndTime.Add(TimeSpan.FromMinutes(appointment.Duration));
                 appointment.Schedule = newSchedule;
 
-                //appointment.Image = db.Images.ToList()[0];
+
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
                 SendEmail(appointment);
@@ -125,21 +149,34 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Appointment/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Appointment appointment = db.Appointments.Find(id);
+
+            var appointments = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).ToList();
+            Appointment appointment = new Appointment();
+            for (int i = 0; i < appointments.Count; i++)
+            {
+                if (appointments[i].AppointmentID == id)
+                {
+                    appointment = appointments[i];
+                }
+            }
             if (appointment == null)
             {
                 return HttpNotFound();
             }
+            else if (!(string.Equals(appointment.Client.Email, User.Identity.Name) ||
+                       string.Equals(appointment.Doctor.Email, User.Identity.Name)) && !(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
 
-            var newView = View(appointment);
-            newView.ViewBag.oldDate = appointment.DateAndTime.ToString("YYYY-MM-DDTHH:II");
-            return newView;
+            return View(appointment);
         }
 
         // POST: Appointment/Edit/5
@@ -147,14 +184,10 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AppointmentID,DateAndTime, ClientString, DoctorString, Client, Doctor, LocationString, Location, Duration, AppointmentType, Schedule, Image, DoctorRating, AppointmentRating")] Appointment appointment, HttpPostedFileBase postedFile)
+        [Authorize]
+        public ActionResult Edit([Bind(Include = "AppointmentID, ClientString, DoctorString, Client, Doctor, LocationString, Location, Duration, AppointmentType, Schedule, Image, DoctorRating, AppointmentRating, DateAndTime")] Appointment appointment, HttpPostedFileBase postedFile)
         {
-            if (appointment.DateAndTime == null)
-            {
-                appointment.DateAndTime = appointment.OldDateAndTime;
-            }
-
-            appointment.OldDateAndTime = appointment.DateAndTime;
+            
             if(ModelState.IsValid)
             {
                 appointment.Client = db.Clients.Find(appointment.ClientString.Split('-')[0].Trim().AsInt());
@@ -165,7 +198,7 @@ namespace FinalAssignment.Controllers
                 {
                     if ((appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration) >
                         clientAppointments[i].DateAndTime &&
-                        clientAppointments[i].DateAndTime > appointment.DateAndTime) || (clientAppointments[i].DateAndTime + TimeSpan.FromMinutes(clientAppointments[i].Duration) > appointment.DateAndTime && appointment.DateAndTime > clientAppointments[i].DateAndTime))
+                        clientAppointments[i].DateAndTime > appointment.DateAndTime) || (clientAppointments[i].DateAndTime + TimeSpan.FromMinutes(clientAppointments[i].Duration) > appointment.DateAndTime && appointment.DateAndTime > clientAppointments[i].DateAndTime) && appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration) < DateTime.Now)
                     {
                         var tempView = View(appointment);
                         tempView.ViewBag.Title = appointment.Client.DropDownList + " already has a booking during this time!";
@@ -173,11 +206,11 @@ namespace FinalAssignment.Controllers
                     }
                 }
                 var doctorAppointments = db.Appointments.Where(a => appointment.Doctor.DoctorID == a.Doctor.DoctorID).ToList();
-                for (int i = 0; i < clientAppointments.Count; i++)
+                for (int i = 0; i < doctorAppointments.Count; i++)
                 {
                     if ((appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration) >
                          doctorAppointments[i].DateAndTime &&
-                         doctorAppointments[i].DateAndTime > appointment.DateAndTime) || (doctorAppointments[i].DateAndTime + TimeSpan.FromMinutes(doctorAppointments[i].Duration) > appointment.DateAndTime && appointment.DateAndTime > doctorAppointments[i].DateAndTime))
+                         doctorAppointments[i].DateAndTime > appointment.DateAndTime) || (doctorAppointments[i].DateAndTime + TimeSpan.FromMinutes(doctorAppointments[i].Duration) > appointment.DateAndTime && appointment.DateAndTime > doctorAppointments[i].DateAndTime) && appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration) < DateTime.Now)
                     {
                         var tempView = View(appointment);
                         tempView.ViewBag.Title = appointment.Doctor.DropDownList + " already has a booking during this time!";
@@ -189,6 +222,7 @@ namespace FinalAssignment.Controllers
                 newSchedule.StartTime = appointment.DateAndTime;
                 newSchedule.EndTime = appointment.DateAndTime.Add(TimeSpan.FromMinutes(appointment.Duration));
                 appointment.Schedule = newSchedule;
+
 
                 if (postedFile != null)
                 {
@@ -207,7 +241,6 @@ namespace FinalAssignment.Controllers
                     SendEmailWithAttachment(appointment);
                 }
                 db.Set<Appointment>().AddOrUpdate(appointment);
-                //db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -216,23 +249,39 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Appointment/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Appointment appointment = db.Appointments.Find(id);
+            var appointments = db.Appointments.Include(c => c.Client).Include(d => d.Doctor).ToList();
+            Appointment appointment = new Appointment();
+            for (int i = 0; i < appointments.Count; i++)
+            {
+                if (appointments[i].AppointmentID == id)
+                {
+                    appointment = appointments[i];
+                }
+            }
             if (appointment == null)
             {
                 return HttpNotFound();
             }
+            else if (!(string.Equals(appointment.Client.Email, User.Identity.Name) ||
+                       string.Equals(appointment.Doctor.Email, User.Identity.Name)) && !(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
+
             return View(appointment);
         }
 
         // POST: Appointment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
             Appointment appointment = db.Appointments.Find(id);
@@ -270,25 +319,7 @@ namespace FinalAssignment.Controllers
             string base64String = Convert.ToBase64String(byteArray);
             newEmail.AddAttachment("Appointment.ics", base64String);
             var response = await client.SendEmailAsync(newEmail);
-            Debug.WriteLine(response.IsSuccessStatusCode ? "Email Queued Succesffuly!" : "Not Successful! D:");
 
-
-            /* string CalendarItem = CreateCalendarFile(appointment);
-             byte[] byteArray = Convert.FromBase64String(CalendarItem);
-             string base64String = Convert.ToBase64String(byteArray);
-
-             Response.ClearHeaders();
-             Response.Clear();
-             Response.Buffer = true;
-             Response.ContentType = "text/calendar";
-             Response.AddHeader("content-length", CalendarItem.Length.ToString());
-             Response.AddHeader("content-disposition", "attachment; filename=\"" + "Booking" + ".ics\"");
-             Response.Write(CalendarItem);
-             Response.Flush();
-
-             newEmail.PlainTextContent = "Testing";*/
-
-            //var response = await client.SendEmailAsync(newEmail);
         }
         private async Task SendEmailWithAttachment(Appointment appointment)
         {
@@ -304,8 +335,6 @@ namespace FinalAssignment.Controllers
             newEmail.PlainTextContent = "Testing";
             if (System.IO.File.Exists(fullPath))
             {
-                //attachment.Content = Convert.ToBase64String(System.IO.File.OpenRead(fullPath));
-                //Convert.ToBase64String(Image.FromFile(fullPath));
                 MemoryStream m = new MemoryStream();
                 Image.FromFile(fullPath).Save(m, Image.FromFile(fullPath).RawFormat);
                 byte[] imageBytes = m.ToArray();
@@ -320,98 +349,48 @@ namespace FinalAssignment.Controllers
         {
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
-            var personalisation = new Personalization();
-            personalisation.Bccs = new List<EmailAddress>();
+
             var appointments = db.Appointments.Include(c => c.Client).ToList();
             var tos = new List<EmailAddress>();
+
             for (int i = 0; i < appointments.Count; i++)
             {
-                var clientEmail = new EmailAddress(appointments[i].Client.Email, appointments[i].Client.FirstName);
-                tos.Add(clientEmail);
+                if (DateTime.Now.Date == appointments[i].DateAndTime.Date)
+                {
+                    var clientEmail = new EmailAddress(appointments[i].Client.Email, appointments[i].Client.FirstName + " " + appointments[i].Client.LastName);
+                    tos.Add(clientEmail);
+                }
             }
 
             var from = new EmailAddress("nicolaspallant@hotmail.com", "Healthcare Services General Practice");
-            var subject = "Sending with Twilio SendGrid is Fun";
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var showAllRecipients = false; // Set to true if you want the recipients to see each others email addresses
+            var subject = "Reminder About Your Appointment Today";
+            var plainTextContent = "";
+            var htmlContent = "Just a reminder that you have a booking today at one of our clinics. Please find attached a map with directions highlighted between our two clinics for your convenience.";
+            var showAllRecipients = false;
 
-            var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from,
-                                                                       tos,
-                                                                       subject,
-                                                                       plainTextContent,
-                                                                       htmlContent,
-                                                                       showAllRecipients
-                                                                       );
-            var response = await client.SendEmailAsync(msg);
-            
+            var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, subject, plainTextContent, htmlContent, showAllRecipients);
 
-            /*string serverPath = Server.MapPath("~/Uploads/");
+            string serverPath = Server.MapPath("~/Uploads/");
             string filePath = db.Images.ToList()[0].Path;
-            string fullPath = serverPath + filePath;*//*
-            newEmail.From = new EmailAddress("NicolasPallant.hotmail.com", "Healthcare Services General Practice");
-            newEmail.Subject = "Appointment Reminder & Directions";
-            //newEmail.AddTos(emails);
-            newEmail.AddTo("nic.pallant@monash.edu");
-            newEmail.AddTo("npal0002@student.monash.edu");
-            //var newEmail = new SendGridMessage();
-            newEmail.HtmlContent = "This is reminder about your appointment booked for today";
-            newEmail.PlainTextContent = "Testing";
-            *//*if (System.IO.File.Exists(fullPath))
+            string fullPath = serverPath + filePath;
+
+            if (System.IO.File.Exists(fullPath))
             {
-               
                 MemoryStream m = new MemoryStream();
                 Image.FromFile(fullPath).Save(m, Image.FromFile(fullPath).RawFormat);
                 byte[] imageBytes = m.ToArray();
                 string base64String = Convert.ToBase64String(imageBytes);
-                newEmail.AddAttachment("DoctorsCertificate" + Path.GetExtension(filePath), base64String);
-            }*//*
-            Debug.WriteLine("Test");
-            var response = await client.SendEmailAsync(newEmail);
-            Debug.WriteLine("Finished!");*/
-            //Debug.WriteLine(response.IsSuccessStatusCode ? "Email Queued Succesffuly!" : "Not Successful! D:");
+                msg.AddAttachment("Directions Between Clinics" + Path.GetExtension(filePath), base64String);
+            }
+
+            var response = await client.SendEmailAsync(msg);
+            
         }
 
         private string CreateCalendarFile(Appointment appointment)
         {
-           /* DateTime DateStart = appointment.DateAndTime;
-            DateTime DateEnd = appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration);
-            string Summary = appointment.Schedule.Name;
-            string Location = appointment.LocationString;
-            string Description = "Your Booking with Healthcare Services General Practice";
-            string FileName = "Booking";
 
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("BEGIN:VCALENDAR");
-            sb.AppendLine("VERSION:2.0");
-            sb.AppendLine("PRODID:stackoverflow.com");
-            sb.AppendLine("CALSCALE:GREGORIAN");
-            sb.AppendLine("METHOD:PUBLISH");
-
-            sb.AppendLine("BEGIN:VTIMEZONE");
-            sb.AppendLine("TZID:Australia/Sydney");
-            sb.AppendLine("END:VTIMEZONE");
-
-            sb.AppendLine("BEGIN:VEVENT");
-
-            sb.AppendLine("DTSTART:" + DateStart.ToString("yyyyMMddTHHmm00"));
-            sb.AppendLine("DTEND:" + DateEnd.ToString("yyyyMMddTHHmm00"));
-
-            sb.AppendLine("SUMMARY:" + Summary + "");
-            sb.AppendLine("LOCATION:" + Location + "");
-            sb.AppendLine("DESCRIPTION:" + Description + "");
-            sb.AppendLine("PRIORITY:3");
-            sb.AppendLine("END:VEVENT");
-
-
-            sb.AppendLine("END:VCALENDAR");
-
-            string CalandarItem = sb.ToString();
-
-            return CalandarItem;*/
-
-           var newEvent = new CalendarEvent()
+            var newEvent = new CalendarEvent()
            {
                Start = new CalDateTime(appointment.DateAndTime),
                End = new CalDateTime(appointment.DateAndTime + TimeSpan.FromMinutes(appointment.Duration)),
@@ -424,6 +403,12 @@ namespace FinalAssignment.Controllers
            calendar.Events.Add(newEvent);
            var serialiser = new CalendarSerializer();
            return serialiser.SerializeToString(calendar);
+        }
+
+        public ActionResult OnButton()
+        {
+            SendBulkEmail();
+            return new JsonResult();
         }
     }
 

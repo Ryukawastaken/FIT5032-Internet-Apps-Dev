@@ -18,12 +18,18 @@ namespace FinalAssignment.Controllers
         private PracticeContext db = new PracticeContext();
 
         // GET: Client
+        [Authorize]
         public ActionResult Index()
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(db.Clients.ToList());
         }
 
         // GET: Client/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -35,12 +41,21 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(client);
         }
 
         // GET: Client/Create
+        [Authorize]
         public ActionResult Create()
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View();
         }
 
@@ -49,6 +64,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "ClientID,FirstName,LastName,DOB,MedicareNo,MedicareUniqueID,Address,Suburb,Postcode,PhoneNumber,Email")] Client client)
         {
             if (ModelState.IsValid)
@@ -75,6 +91,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Client/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -86,6 +103,11 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
+
             return View(client);
         }
 
@@ -94,6 +116,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit([Bind(Include = "ClientID,FirstName,LastName,DOB,MedicareNo,MedicareUniqueID,Address,Suburb,Postcode,PhoneNumber,Email")] Client client)
         {
             if (ModelState.IsValid)
@@ -106,6 +129,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Client/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -117,14 +141,23 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(client);
         }
 
         // POST: Client/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             Client client = db.Clients.Find(id);
             db.Clients.Remove(client);
             db.SaveChanges();

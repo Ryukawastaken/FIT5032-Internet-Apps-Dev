@@ -11,13 +11,20 @@
     <h4>Appointment</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.DateAndTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DateAndTime)
-        </dd>
+	    <dt>@Html.DisplayNameFor(model => model.Client)</dt>
+	    <dd>@Html.DisplayFor(model => model.Client.DropDownList)</dd>
+	    <dt>@Html.DisplayNameFor(model => model.Doctor)</dt>
+	    <dd>@Html.DisplayFor(model => model.Doctor.DropDownList)</dd>
+	    <dt>@Html.DisplayNameFor(model => model.DateAndTime)</dt>
+	    <dd>@Html.DisplayFor(model => model.DateAndTime)</dd>
+	    <dt>@Html.DisplayNameFor(model => model.Duration)</dt>
+	    <dd>@Html.DisplayFor(model => model.Duration) minutes</dd>
+	    <dt>@Html.DisplayNameFor(model => model.Location)</dt>
+	    <dd>@Html.DisplayFor(model => model.LocationString)</dd>
+	    <dt>@Html.DisplayNameFor(model => model.AppointmentRating)</dt>
+	    <dd>@Html.DisplayFor(model => model.AppointmentRating)</dd>
+	    <dt>@Html.DisplayNameFor(model => model.DoctorRating)</dt>
+	    <dd>@Html.DisplayFor(model => model.DoctorRating)</dd>
 
     </dl>
 

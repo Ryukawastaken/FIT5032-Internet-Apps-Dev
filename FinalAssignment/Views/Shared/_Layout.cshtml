@@ -12,6 +12,7 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
 
+    <link href="~/Content/Practice.css" rel="stylesheet" />
 
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
@@ -40,14 +41,15 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li>@Html.ActionLink("About", "About", "Home")</li>
-				<li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+				<li>@Html.ActionLink("Locations", "Index", "Location")</li>
 				@if (User.IsInRole("Admin") || User.IsInRole("Reception"))
 				{
-					<li>@Html.ActionLink("Client List", "Index", "Client")</li>
+					<li>@Html.ActionLink("Clients", "Index", "Client")</li>
 				}
 				@if (User.IsInRole("Admin"))
 				{
-					<li>@Html.ActionLink("Doctor List", "Index", "Doctor")</li>
+					<li>@Html.ActionLink("Doctors", "Index", "Doctor")</li>
+					<li>@Html.ActionLink("Images", "Index", "Image")</li>
 
 				}
 				@if (User.IsInRole("Client") || User.IsInRole("Doctor") || User.IsInRole("Reception") || User.IsInRole("Admin"))

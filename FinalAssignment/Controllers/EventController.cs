@@ -15,12 +15,14 @@ namespace FinalAssignment.Controllers
         private PracticeContext db = new PracticeContext();
 
         // GET: Event
+        [Authorize]
         public ActionResult Index()
         {
             return View(db.Events.ToList());
         }
 
         // GET: Event/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -36,6 +38,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Event/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -46,6 +49,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "EventID,Name,StartTime,EndTime")] Event @event)
         {
             if (ModelState.IsValid)
@@ -59,6 +63,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Event/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -76,6 +81,7 @@ namespace FinalAssignment.Controllers
         // POST: Event/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "EventID,Name,StartTime,EndTime")] Event @event)
@@ -90,6 +96,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Event/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -107,6 +114,7 @@ namespace FinalAssignment.Controllers
         // POST: Event/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
             Event @event = db.Events.Find(id);

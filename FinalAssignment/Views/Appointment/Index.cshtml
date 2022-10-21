@@ -7,8 +7,13 @@
 <h2>Appointments</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (User.IsInRole("Reception") || User.IsInRole("Admin"))
+    {
+	    <input type="button" onclick="PressButton()" value="Send Today's Appointments" />
+	    @Html.ActionLink("Create New", "Create")
+    }
 </p>
+
 <table id="appointments" class="table">
 	<thead>
         <tr>
@@ -34,10 +39,7 @@
                 @Html.DisplayNameFor(model => model.Location)
 
             </th>
-            @*<th>
-            @Html.DisplayNameFor(model => model.Image)
-        </th>*@
-            <th></th>
+	        <th></th>
         </tr>
 	</thead>
     <tbody>
@@ -53,6 +55,7 @@
                 </td>
 	            <td>
 		            @Html.DisplayFor(modelItem => item.DateAndTime)
+		            @Html.DisplayFor(modelItem => item.DateAndTime.TimeOfDay)
 
 	            </td>
 	            <td>
@@ -67,18 +70,16 @@
 		            @Html.DisplayFor(modelItem => item.Location.DropDownList)
 
 	            </td>
-               @* @if (item.Image != null)
-                {
-                    <td>
-                        <img class="img-thumbnail" src="@Url.Content("~/Uploads/" + item.Image.Path)" />
-                    </td>
-                }*@
 
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentID }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.AppointmentID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentID })
-                </td>
+	            <td>
+                   @if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+                   {
+	                   @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentID })
+                   }
+                   |
+                   @Html.ActionLink("Details", "Details", new { id = item.AppointmentID }) |
+	               @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentID })
+               </td>
             </tr>
         }
     </tbody>
@@ -94,7 +95,13 @@
 		            { "type": "date", "targets": 2 }
 	            ]
             } );
-		});
+        });
+        function PressButton() {
+	        $.get("/Appointment/OnButton",
+		        function(data) {
+			        $("p".html(data));
+		        });
+        }
 	</script>
 }
 <link href="~/Content/DataTables/css/dataTables.bootstrap.min.css"

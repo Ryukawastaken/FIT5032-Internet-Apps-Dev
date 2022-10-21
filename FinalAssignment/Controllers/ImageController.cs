@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,12 +17,39 @@ namespace FinalAssignment.Controllers
         private PracticeContext db = new PracticeContext();
 
         // GET: Image
+        [Authorize]
         public ActionResult Index()
         {
-            return View(db.Images.ToList());
+            /*if (User.IsInRole("Doctor"))
+            {
+                var appointments  = db.Appointments.Where(a => string.Equals(a.Doctor.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image).ToList();
+                List<Image> images = new List<Image>();
+                for (int i = 0; i < appointments.Count; i++)
+                {
+                    images.Append(appointments[i].Image);
+                }
+                return View(images);
+            }
+            if (User.IsInRole("Client"))
+            {
+                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image).ToList().Where(i => i.Image.ImageID == images.ForEach());
+                List<Image> images = new List<Image>();
+                for (int i = 0; i < appointments.Count; i++)
+                {
+                    images.Append(appointments[i].Image);
+                }
+            }
+*/
+            if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+            {
+                return View(db.Images);
+            }
+
+            return HttpNotFound();
         }
 
         // GET: Image/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -33,12 +61,44 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
-            return View(image);
+
+            /*if (User.IsInRole("Client"))
+            {
+                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image).ToList();
+                for (int i = 0; i < appointments.Count; i++)
+                {
+                    if (image == appointments[i].Image)
+                    {
+                        return View(image);
+                    }
+                }
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                var appointments = db.Appointments.Where(a => string.Equals(a.Doctor.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image).ToList();
+                for (int i = 0; i < appointments.Count; i++)
+                {
+                    if (image == appointments[i].Image)
+                    {
+                        return View(image);
+                    }
+                }
+            }*/
+            else if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+            {
+                return View(image);
+            }
+            return HttpNotFound();
         }
 
         // GET: Image/Create
+        [Authorize]
         public ActionResult Create()
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View();
         }
 
@@ -47,6 +107,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "ImageID,Name")] Image image, HttpPostedFileBase postedFile)
         {
             ModelState.Clear();
@@ -71,6 +132,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Image/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -82,7 +144,33 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
-            return View(image);
+            /*if (User.IsInRole("Client"))
+            {
+                var appointments = db.Appointments.Where(a => string.Equals(a.Client.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image).ToList();
+                for (int i = 0; i < appointments.Count; i++)
+                {
+                    if (image == appointments[i].Image)
+                    {
+                        return View(image);
+                    }
+                }
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                var appointments = db.Appointments.Where(a => string.Equals(a.Doctor.Email, User.Identity.Name)).Include(c => c.Client).Include(d => d.Doctor).Include(l => l.Location).Include(i => i.Image).ToList();
+                for (int i = 0; i < appointments.Count; i++)
+                {
+                    if (image == appointments[i].Image)
+                    {
+                        return View(image);
+                    }
+                }
+            }*/
+            else if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+            {
+                return View(image);
+            }
+            return HttpNotFound();
         }
 
         // POST: Image/Edit/5
@@ -90,6 +178,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit([Bind(Include = "ImageID,Path,Name")] Image image)
         {
             if (ModelState.IsValid)
@@ -102,6 +191,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Image/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -113,14 +203,23 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(image);
         }
 
         // POST: Image/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             Image image = db.Images.Find(id);
             db.Images.Remove(image);
             db.SaveChanges();

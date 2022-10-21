@@ -36,8 +36,13 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Location/Create
+        [Authorize]
         public ActionResult Create()
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View();
         }
 
@@ -46,6 +51,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "LocationID,Name,Description,Latitude,Longitude")] Location location)
         {
             if (ModelState.IsValid)
@@ -59,6 +65,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Location/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -70,6 +77,10 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(location);
         }
 
@@ -78,6 +89,7 @@ namespace FinalAssignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit([Bind(Include = "LocationID,Name,Description,Latitude,Longitude")] Location location)
         {
             if (ModelState.IsValid)
@@ -90,6 +102,7 @@ namespace FinalAssignment.Controllers
         }
 
         // GET: Location/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -101,14 +114,23 @@ namespace FinalAssignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             return View(location);
         }
 
         // POST: Location/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (!(User.IsInRole("Admin") || User.IsInRole("Reception")))
+            {
+                return HttpNotFound();
+            }
             Location location = db.Locations.Find(id);
             db.Locations.Remove(location);
             db.SaveChanges();

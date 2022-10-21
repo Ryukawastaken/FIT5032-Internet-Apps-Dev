@@ -24,28 +24,40 @@ namespace FinalAssignment.Models
     }
     public class Appointment
     {
+        [Required]
         public int AppointmentID { get; set; }
+
         public Client Client { get; set; }
+
         public Doctor Doctor { get; set; }
+
         public rating_score DoctorRating { get; set; }
+
         public rating_score AppointmentRating { get; set; }
 
+        [Required]
         public appointment_type AppointmentType { get; set; }
 
         public Schedule Schedule { get; set; }
 
+        [Required]
         public string ClientString { get; set; }
+
+        [Required]
         public string DoctorString { get; set; }
+
+        [Required]
         public string LocationString { get; set; }
 
         public Location Location { get; set; }
 
 
-        [Required(ErrorMessage = "You can't leave this field blank!")]
+        [Required(ErrorMessage = "You can't leave the date blank!")]
         [DataType(DataType.Date)]
         public DateTime DateAndTime { get; set; }
-        public DateTime OldDateAndTime { get; set; }
-        [Required(ErrorMessage = "You can't leave this field blank!")]
+
+        [Required(ErrorMessage = "You must have a duration!")]
+        [Range(0,480,ErrorMessage = "Duration must be between 0 and 480 minutes!")]
         public int Duration { get; set; }
 
         public string ImageName { get; set; }
