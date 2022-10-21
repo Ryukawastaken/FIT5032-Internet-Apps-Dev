@@ -323,31 +323,28 @@ namespace FinalAssignment.Controllers
             var personalisation = new Personalization();
             personalisation.Bccs = new List<EmailAddress>();
             var appointments = db.Appointments.Include(c => c.Client).ToList();
-            var newEmail = new SendGridMessage()
-            {
-                From = new EmailAddress("NicolasPallant.hotmail.com"),
-                Subject = "Test",
-                PlainTextContent = "Text for Body",
-                HtmlContent = "<strong> Hello World!",
-                Personalizations = new List<Personalization>
-                {
-                    new Personalization
-                    {
-                        Tos = new List<EmailAddress>
-                        {
-                            new EmailAddress("npal0002@student.monash.edu"),
-                            new EmailAddress("nic.pallant@monash.edu")
-                        }
-                    }
-                }
-            };
-            var response = await client.SendEmailAsync(newEmail);
-            /*var emails = new List<EmailAddress>();
-            *//*for (int i = 0; i < appointments.Count; i++)
+            var tos = new List<EmailAddress>();
+            for (int i = 0; i < appointments.Count; i++)
             {
                 var clientEmail = new EmailAddress(appointments[i].Client.Email, appointments[i].Client.FirstName);
-                emails.Add(clientEmail);
-            }*/
+                tos.Add(clientEmail);
+            }
+
+            var from = new EmailAddress("nicolaspallant@hotmail.com", "Healthcare Services General Practice");
+            var subject = "Sending with Twilio SendGrid is Fun";
+            var plainTextContent = "and easy to do anywhere, even with C#";
+            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var showAllRecipients = false; // Set to true if you want the recipients to see each others email addresses
+
+            var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from,
+                                                                       tos,
+                                                                       subject,
+                                                                       plainTextContent,
+                                                                       htmlContent,
+                                                                       showAllRecipients
+                                                                       );
+            var response = await client.SendEmailAsync(msg);
+            
 
             /*string serverPath = Server.MapPath("~/Uploads/");
             string filePath = db.Images.ToList()[0].Path;
