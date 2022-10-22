@@ -35,6 +35,7 @@ namespace FinalAssignment.Models
 
         public List<Appointment> Appointments { get; set; }
 
+        //Represents the rating of this location, calculated by averaging the rating of all of their appointments
         public float Rating {
             get
             {
@@ -59,6 +60,7 @@ namespace FinalAssignment.Models
             }
         }
 
+        //Get concatanated string for dropdown lists
         [NotMapped]
         public string DropDownList { get { return LocationID + " - " + Name + " " + Description; } }
     }

@@ -6,6 +6,7 @@ using System.Web;
 
 namespace FinalAssignment.Models
 {
+    //Enum for different types of appointments
     public enum appointment_type
     {
         Consultation,
@@ -14,6 +15,7 @@ namespace FinalAssignment.Models
         Vaccination
     }
 
+    //Enum for different rating scores for doctors and appointments
     public enum rating_score
     {
         Horrible = 1,
@@ -22,6 +24,8 @@ namespace FinalAssignment.Models
         Great = 4,
         Fantastic = 5
     }
+
+    //Represents an appointment
     public class Appointment
     {
         [Required]

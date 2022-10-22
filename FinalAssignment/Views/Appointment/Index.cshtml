@@ -16,73 +16,73 @@
 
 <table id="appointments" class="table">
 	<thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Client)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Doctor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateAndTime)
+	<tr>
+		<th>
+			@Html.DisplayNameFor(model => model.Client)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.Doctor)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.DateAndTime)
 
-            </th>
-	        <th>
-		        @Html.DisplayNameFor(model => model.Duration)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.Duration)
 
-	        </th>
-	        <th>
-		        @Html.DisplayNameFor(model => model.AppointmentType)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.AppointmentType)
 
-	        </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.Location)
 
-            </th>
-	        <th></th>
-        </tr>
+		</th>
+		<th></th>
+	</tr>
 	</thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Client.DropDownList)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Doctor.DropDownList)
+	<tbody>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Client.DropDownList)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Doctor.DropDownList)
 
-                </td>
-	            <td>
-		            @Html.DisplayFor(modelItem => item.DateAndTime)
-		            @Html.DisplayFor(modelItem => item.DateAndTime.TimeOfDay)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.DateAndTime)
+				@Html.DisplayFor(modelItem => item.DateAndTime.TimeOfDay)
 
-	            </td>
-	            <td>
-		            @Html.DisplayFor(modelItem => item.Duration)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Duration)
 
-	            </td>
-	            <td>
-		            @Html.DisplayFor(modelItem => item.AppointmentType)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.AppointmentType)
 
-	            </td>
-	            <td>
-		            @Html.DisplayFor(modelItem => item.Location.DropDownList)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Location.DropDownList)
 
-	            </td>
+			</td>
 
-	            <td>
-                   @if (User.IsInRole("Admin") || User.IsInRole("Reception"))
-                   {
-	                   @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentID })
-                   }
-                   |
-                   @Html.ActionLink("Details", "Details", new { id = item.AppointmentID }) |
-	               @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentID })
-               </td>
-            </tr>
-        }
-    </tbody>
+			<td>
+				@if (User.IsInRole("Admin") || User.IsInRole("Reception"))
+				{
+					@Html.ActionLink("Edit", "Edit", new { id = item.AppointmentID })
+				}
+				|
+				@Html.ActionLink("Details", "Details", new { id = item.AppointmentID }) |
+				@Html.ActionLink("Delete", "Delete", new { id = item.AppointmentID })
+			</td>
+		</tr>
+	}
+	</tbody>
 </table>
 @section Scripts {
 

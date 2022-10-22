@@ -6,6 +6,7 @@ using System.Web;
 
 namespace FinalAssignment.Models
 {
+    //Represents a schedule, used for sending google calandar appointments
     public class Schedule
     {
         public int ScheduleID { get; set; }

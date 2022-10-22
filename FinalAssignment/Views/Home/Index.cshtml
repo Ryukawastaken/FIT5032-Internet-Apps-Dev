@@ -2,26 +2,28 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Tamrul General Practice Innovations</h1>
-    <p class="lead">Family run GPs Located in multiple locations within Melbourne.</p>
+<div class="row">
+	<h1 style="font-size: 65px">Tamrul General Practice Innovations</h1>
+    <h3>Family run GPs Located in multiple locations within Melbourne.</h3>
 </div>
 
+<img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80" class="img-responsive" alt="Banner Image"/>
+
 <div class="row">
-    <div class="col-md-4">
-        <h2>About Us</h2>
-        <p>
-            We are a family run set of GP clinics who focus on providing the best health services we possibly can.
-        </p>
-	    @Html.ActionLink("About Us", "About", "Home")
-    </div>
-    <div class="col-md-4">
-        <h2>Book an Appointment</h2>
-        <p>To book an appointment, please contact our lovely reception staff at 03 9700 5373.</p>
-    </div>
-    <div class="col-md-4">
-        <h2>Locations</h2>
-        <p>Find us!.</p>
-	    @Html.ActionLink("Locations", "Index", "Location")
-    </div>
+	<div class="col-md-4">
+		<h2>About Us</h2>
+		<p>
+			We are a family run set of GP clinics who focus on providing the best health services we possibly can.
+		</p>
+		@Html.ActionLink("About Us", "About", "Home")
+	</div>
+	<div class="col-md-4">
+		<h2>Book an Appointment</h2>
+		<p>To book an appointment, please contact our lovely reception staff at 03 9700 5373.</p>
+	</div>
+	<div class="col-md-4">
+		<h2>Locations</h2>
+		<p>Find us!.</p>
+		@Html.ActionLink("Locations", "Index", "Location")
+	</div>
 </div>

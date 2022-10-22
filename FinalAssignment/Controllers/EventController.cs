@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using FinalAssignment.Models;
 
+//THIS CLASS IS NOT USED, WAS ORIGINALLY FOR USING FULLCALANDAR, BUT AFTER MUCH TRIAL AND ERROR, COULD NOT GET IT WORKING
+
 namespace FinalAssignment.Controllers
 {
     public class EventController : Controller

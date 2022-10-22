@@ -6,6 +6,7 @@ using System.Web;
 
 namespace FinalAssignment.Models
 {
+    //Represents single event (NOT USED)
     public class Event
     {
         public int EventID { get; set; }

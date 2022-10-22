@@ -8,6 +8,7 @@ using System.Web.UI;
 
 namespace FinalAssignment.Models
 {
+    //Represents a single client
     public class Client
     {
         [Required]
@@ -62,6 +63,8 @@ namespace FinalAssignment.Models
 
         public List<Appointment> Appointments { get; set; }
 
+
+        //Get concatanated string for dropdown lists
         [NotMapped]
         public string DropDownList { get { return ClientID + " - " + FirstName + " " + LastName; } }
 
